@@ -1,10 +1,10 @@
-const { Util } = require('discord.js')
+const { verifyString } = require('discord.js')
 
 module.exports.splitMessage = (
   text,
   { maxLength = 2_000, char = '\n', prepend = '', append = '' } = {}
 ) => {
-  text = Util.verifyString(text)
+  text = verifyString(text)
   if (text.length <= maxLength) return [text]
   let splitText = [text]
   if (Array.isArray(char)) {
