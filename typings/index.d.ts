@@ -15,12 +15,17 @@ declare module 'dokdo' {
     prefix?: string
     secrets?: any[]
     globalVariable?: Record<string, any>
-    noPerm(message: Discord.Message): any|Promise<any>
-    isOwner?: (user: Discord.User) => boolean|Promise<boolean>
+    noPerm(message: Discord.Message): any | Promise<any>
+    isOwner?: (user: Discord.User) => boolean | Promise<boolean>
   }
 
   export class ProcessManager {
-    constructor(message: Discord.Message, content: string, dokdo: Dokdo, options: ProcessOptions)
+    constructor(
+      message: Discord.Message,
+      content: string,
+      dokdo: Dokdo,
+      options: ProcessOptions
+    )
     public target: Discord.TextChannel
     public dokdo: Dokdo
     public content: string
@@ -44,6 +49,6 @@ declare module 'dokdo' {
     emoji: string
     requirePage: boolean
 
-    action({ manager: Dokdo, ...args }): any|Promise<any> 
+    action({ manager: Dokdo, ...args }): any | Promise<any>
   }
 }

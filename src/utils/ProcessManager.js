@@ -33,13 +33,13 @@ const { splitMessage } = require('../polyfill')
  */
 
 /**
-   * Process Manager of every Process
-   *
-   * @param {Discord.Message} message
-   * @param {string} content
-   * @param {Dokdo} dokdo
-   * @param {ProcessManagerOptions} options
-   */
+ * Process Manager of every Process
+ *
+ * @param {Discord.Message} message
+ * @param {string} content
+ * @param {Dokdo} dokdo
+ * @param {ProcessManagerOptions} options
+ */
 module.exports = class ProcessManager {
   /**
    * @type {Discord.Message}
@@ -51,7 +51,7 @@ module.exports = class ProcessManager {
    */
   author
 
-  constructor (message, content, dokdo, options = {}) {
+  constructor(message, content, dokdo, options = {}) {
     this.target = message.channel
     this.dokdo = dokdo
     this.content = content || '​'
@@ -65,12 +65,15 @@ module.exports = class ProcessManager {
     this.wait = 1
     this.message = null
     this.argument = []
-    if (typeof this.content !== 'string') throw new Error('Please pass valid content')
+    if (typeof this.content !== 'string')
+      throw new Error('Please pass valid content')
   }
 
-  async init () {
+  async init() {
     this.messageContent = this.genText()
-    this.message = await this.target.send(this.filterSecret(this.messageContent))
+    this.message = await this.target.send(
+      this.filterSecret(this.messageContent)
+    )
   }
 
   /**
@@ -78,7 +81,7 @@ module.exports = class ProcessManager {
    * @param {Action} actions
    * @param {Record<string, any>} args
    */
-  async addAction (actions, args) {
+  async addAction(actions, args) {
     if (!this.message) return
 
     this.actions = actions
@@ -87,10 +90,21 @@ module.exports = class ProcessManager {
     this.args.manager = this
 
     this.createMessageComponentMessage()
-    this.messageComponentCollector = this.message.createMessageComponentCollector({ filter: (interaction) => this.actions.find(e => e.button.data.custom_id === interaction.customId) && interaction.user.id === this.author.id, time: 300000, error: ['time'], dispose: true })
+    this.messageComponentCollector =
+      this.message.createMessageComponentCollector({
+        filter: (interaction) =>
+          this.actions.find(
+            (e) => e.button.data.custom_id === interaction.customId
+          ) && interaction.user.id === this.author.id,
+        time: 300000,
+        error: ['time'],
+        dispose: true
+      })
 
-    this.messageComponentCollector.on('collect', component => {
-      const event = this.actions.find(e => e.button.data.custom_id === component.customId)
+    this.messageComponentCollector.on('collect', (component) => {
+      const event = this.actions.find(
+        (e) => e.button.data.custom_id === component.customId
+      )
       if (!event) return
       component.deferUpdate()
       event.action(this.args)
@@ -101,17 +115,21 @@ module.exports = class ProcessManager {
     })
   }
 
-  async createMessageComponentMessage () {
+  async createMessageComponentMessage() {
     if (this.options.noCode && this.splitted.length < 2) return
-    const buttons = this.actions.filter(el => !(el.requirePage && this.splitted.length <= 1))
-      .map(el => el.button)
+    const buttons = this.actions
+      .filter((el) => !(el.requirePage && this.splitted.length <= 1))
+      .map((el) => el.button)
     if (buttons.length <= 0) return
     const actionRow = new Discord.ActionRowBuilder({ components: buttons })
     this.message.edit({ components: [actionRow] })
   }
 
-  filterSecret (string) {
-    string = string.replace(new RegExp(this.dokdo.client.token, 'gi'), '[accesstoken was hidden]')
+  filterSecret(string) {
+    string = string.replace(
+      new RegExp(this.dokdo.client.token, 'gi'),
+      '[accesstoken was hidden]'
+    )
 
     for (const el of this.dokdo.options.secrets) {
       string = string.replace(new RegExp(regexpEscape(el), 'gi'), '[secret]')
@@ -120,7 +138,7 @@ module.exports = class ProcessManager {
     return string
   }
 
-  updatePage (num) {
+  updatePage(num) {
     if (!this.message) return
     if (this.splitted.length < num || num < 1) throw new Error('Invalid page.')
     this.page = num
@@ -128,19 +146,19 @@ module.exports = class ProcessManager {
     this.update(this.genText())
   }
 
-  nextPage () {
+  nextPage() {
     if (this.page >= this.splitted.length) return
 
     this.updatePage(this.page + 1)
   }
 
-  previousPage () {
+  previousPage() {
     if (this.page <= 1) return
 
     this.updatePage(this.page - 1)
   }
 
-  update () {
+  update() {
     if (!this.message) return
     this.splitted = this.splitContent()
     if (this.wait === 0) this.messageContent = this.genText()
@@ -158,7 +176,7 @@ module.exports = class ProcessManager {
     }
   }
 
-  edit () {
+  edit() {
     if (this.splitted.length > 1) this.createMessageComponentMessage()
     this.message.edit(this.filterSecret(this.messageContent))
   }
@@ -166,23 +184,31 @@ module.exports = class ProcessManager {
   /**
    * @param {string} content
    */
-  add (content) {
+  add(content) {
     if (!this.message) return
     this.content += content
 
     this.update(this.content)
   }
 
-  destroy () {
+  destroy() {
     this.message.edit({ components: [] })
     this.messageComponentCollector.stop()
   }
 
-  genText () {
-    return this.options.noCode && this.splitted.length < 2 ? `${this.splitted[this.page - 1]}` : `${codeBlock.construct(this.splitted[this.page - 1], this.options.lang)}\n\nPage ${this.page}/${this.splitted.length}`
+  genText() {
+    return this.options.noCode && this.splitted.length < 2
+      ? `${this.splitted[this.page - 1]}`
+      : `${codeBlock.construct(
+          this.splitted[this.page - 1],
+          this.options.lang
+        )}\n\nPage ${this.page}/${this.splitted.length}`
   }
 
-  splitContent () {
-    return splitMessage(this.content, { maxLength: this.limit, char: [new RegExp(`.{1,${this.limit}}`, 'g'), '\n'] })
+  splitContent() {
+    return splitMessage(this.content, {
+      maxLength: this.limit,
+      char: [new RegExp(`.{1,${this.limit}}`, 'g'), '\n']
+    })
   }
 }

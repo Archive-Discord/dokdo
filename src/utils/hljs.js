@@ -315,14 +315,16 @@ module.exports = class HLJS {
     'zephir',
     'zone',
     'zsh'
-  ].sort().sort((a, b) => b.length - a.length)
+  ]
+    .sort()
+    .sort((a, b) => b.length - a.length)
 
   /**
    * Get highlight.js language of given query.
    * @param {string} query
    */
-  static getLang (query) {
+  static getLang(query) {
     if (!query || typeof query !== 'string') return null
-    return this.languages.find(l => query.endsWith(l))
+    return this.languages.find((l) => query.endsWith(l))
   }
 }

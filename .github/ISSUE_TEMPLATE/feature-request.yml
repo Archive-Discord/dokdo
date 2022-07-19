@@ -1,7 +1,7 @@
 name: 🖐️ Feature Request
 description: Submit a feature request!
-title: "[FR] "
-labels: ["type: enhancement"]
+title: '[FR] '
+labels: ['type: enhancement']
 body:
   - type: markdown
     attributes:

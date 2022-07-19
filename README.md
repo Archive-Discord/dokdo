@@ -26,10 +26,11 @@ It's debugging tool for `discord.js` projects.
     <summary><strong>Using Discord.js v12?</strong></summary>
 
 You could install `dokdo@0.4` by
-    
+
 ```sh
   npm i dokdo@djsv12
 ```
+
 </details>
 
 ### Stable
@@ -43,8 +44,6 @@ npm i dokdo@latest
 ```sh
 npm i wonderlandpark/dokdo#main
 ```
-
-
 
 ## Features
 
@@ -64,9 +63,12 @@ const client = new Discord.Client({ intents: ['GUILDS', 'GUILD_MESSAGES'] })
 
 const Dokdo = require('dokdo')
 
-const DokdoHandler = new Dokdo(client, { aliases: ['dokdo', 'dok'], prefix: '!' }) // Using Bot Application ownerID as default for owner option.
+const DokdoHandler = new Dokdo(client, {
+  aliases: ['dokdo', 'dok'],
+  prefix: '!'
+}) // Using Bot Application ownerID as default for owner option.
 
-client.on('messageCreate', async message => {
+client.on('messageCreate', async (message) => {
   if (message.content === 'ping') return message.channel.send('Pong') // handle commands first
   DokdoHandler.run(message) // try !dokdo
 })

@@ -1,4 +1,4 @@
-module.exports = function regexpEscape (string) {
+module.exports = function regexpEscape(string) {
   const str = String(string)
   const cpList = Array.from(str[Symbol.iterator]())
   const cuList = []

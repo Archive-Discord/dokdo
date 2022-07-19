@@ -6,8 +6,13 @@ module.exports = {
     node: true,
     mocha: true
   },
-  extends: ['standard', 'eslint:recommended', 'plugin:mocha/recommended'],
-  plugins: ['jsdoc', 'markdown', 'mocha'],
+  extends: [
+    'standard',
+    'eslint:recommended',
+    'plugin:mocha/recommended',
+    'prettier'
+  ],
+  plugins: ['jsdoc', 'markdown', 'mocha', 'prettier'],
   globals: {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly'

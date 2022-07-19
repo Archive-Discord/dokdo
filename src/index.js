@@ -36,14 +36,29 @@ module.exports = class Dokdo {
    * @param {Discord.Client} client Discord Client
    * @param {DokdoOptions} options Dokdo Options
    */
-  constructor (client, { aliases = ['dokdo', 'dok'], owners = null, prefix, secrets = [], noPerm, disableAttachmentExecution = false, globalVariable = {}, isOwner = undefined } = {}) {
-    if (!(client instanceof Discord.Client)) throw new Error('Invalid `client`. `client` parameter is required.')
+  constructor(
+    client,
+    {
+      aliases = ['dokdo', 'dok'],
+      owners = null,
+      prefix,
+      secrets = [],
+      noPerm,
+      disableAttachmentExecution = false,
+      globalVariable = {},
+      isOwner = undefined
+    } = {}
+  ) {
+    if (!(client instanceof Discord.Client))
+      throw new Error('Invalid `client`. `client` parameter is required.')
     // if (!this.options || typeof options !== 'object') throw new Error('Invliad `options`. `options` parameter is required.')
-    if (noPerm && typeof noPerm !== 'function') throw new Error('`noPerm` parameter must be Function.')
+    if (noPerm && typeof noPerm !== 'function')
+      throw new Error('`noPerm` parameter must be Function.')
     if (globalVariable) {
-      if (typeof globalVariable !== 'object') throw new Error('`globalVariable` parameter must be Object.')
+      if (typeof globalVariable !== 'object')
+        throw new Error('`globalVariable` parameter must be Object.')
       else {
-        Object.keys(globalVariable).forEach(el => {
+        Object.keys(globalVariable).forEach((el) => {
           global[el] = globalVariable[el]
         })
       }
@@ -56,17 +71,33 @@ module.exports = class Dokdo {
     client.once('ready', () => {
       if (!this.owners) {
         console.warn('[dokdo] Owners not given. Fetching from Application.')
-        client.application.fetch().then(data => {
-          this.owners = data.owner.members?.map(el => el.id) || [data.owner.id] || []
-          console.info(`[dokdo] Fetched ${this.owners.length} owner(s): ${this.owners.length > 3 ? this.owners.slice(0, 3).join(', ') + ` and ${this.owners.length - 3} more owners` : this.owners.join(', ')}`)
+        client.application.fetch().then((data) => {
+          this.owners =
+            data.owner.members?.map((el) => el.id) || [data.owner.id] || []
+          console.info(
+            `[dokdo] Fetched ${this.owners.length} owner(s): ${
+              this.owners.length > 3
+                ? this.owners.slice(0, 3).join(', ') +
+                  ` and ${this.owners.length - 3} more owners`
+                : this.owners.join(', ')
+            }`
+          )
         })
       }
     })
 
     this.client = client
     this.process = []
-    this.options = { prefix, aliases, secrets, noPerm, disableAttachmentExecution, isOwner }
-    if (!this.options.secrets || !Array.isArray(this.options.secrets)) this.options.secrets = []
+    this.options = {
+      prefix,
+      aliases,
+      secrets,
+      noPerm,
+      disableAttachmentExecution,
+      isOwner
+    }
+    if (!this.options.secrets || !Array.isArray(this.options.secrets))
+      this.options.secrets = []
     if (!this.options.aliases) this.options.aliases = ['dokdo', 'dok']
   }
 
@@ -74,8 +105,9 @@ module.exports = class Dokdo {
    * @param {Discord.Message} message Message
    * @returns {Promise<any>|any}
    */
-  async run (message) {
-    if (this.options.prefix && !message.content.startsWith(this.options.prefix)) return
+  async run(message) {
+    if (this.options.prefix && !message.content.startsWith(this.options.prefix))
+      return
 
     const parsed = message.content.replace(this.options.prefix, '').split(' ')
     const codeParsed = Utils.codeBlock.parse(parsed.slice(2).join(' '))
@@ -89,16 +121,25 @@ module.exports = class Dokdo {
       type: parsed[1],
       args: codeParsed ? codeParsed[2] : parsed.slice(2).join(' ')
     }
-    if (!message.data.args && message.attachments.size > 0 && !this.options.disableAttachmentExecution) {
+    if (
+      !message.data.args &&
+      message.attachments.size > 0 &&
+      !this.options.disableAttachmentExecution
+    ) {
       const file = message.attachments.first()
       const buffer = await (await fetch(file.url)).buffer()
       const type = { ext: file.name.split('.').pop(), fileName: file.name }
       if (['txt', 'js', 'ts', 'sh', 'bash', 'zsh', 'ps'].includes(type.ext)) {
         message.data.args = buffer.toString()
-        if (!message.data.type && type.ext !== 'txt') message.data.type = type.ext
+        if (!message.data.type && type.ext !== 'txt')
+          message.data.type = type.ext
       }
     }
-    if (this.options.aliases && !this.options.aliases.includes(message.data.cmd)) return
+    if (
+      this.options.aliases &&
+      !this.options.aliases.includes(message.data.cmd)
+    )
+      return
     if (!this.owners.includes(message.author.id)) {
       let isOwner = false
 
@@ -144,17 +185,21 @@ module.exports = class Dokdo {
         Commands.docs(message, this)
         break
       default:
-        message.channel.send(`Available Options: ${Object.keys(Commands).map(t => `\`${t}\``).join(', ')}`)
+        message.channel.send(
+          `Available Options: ${Object.keys(Commands)
+            .map((t) => `\`${t}\``)
+            .join(', ')}`
+        )
     }
   }
 
-  _addOwner (id) {
+  _addOwner(id) {
     if (this.owners.includes(id)) return
     this.owners.push(id)
     return this.owners
   }
 
-  _removeOwner (id) {
+  _removeOwner(id) {
     if (!this.owners.includes(id)) return null
     this.owners.splice(this.owners.indexOf(id), 1)
     return this.owners

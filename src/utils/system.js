@@ -4,20 +4,20 @@ module.exports = class System {
    *
    * @returns {NodeJS.MemoryUsage}
    */
-  static memory () {
+  static memory() {
     const memory = process.memoryUsage()
     const keys = Object.keys(memory)
     const a = memory
     const result = {}
 
-    keys.forEach(key => {
+    keys.forEach((key) => {
       result[key] = (a[key] / 1024 / 1024).toFixed(2) + 'MB'
     })
 
     return result
   }
 
-  static processReadyAt () {
+  static processReadyAt() {
     return new Date(Date.now() - process.uptime() * 1000)
   }
 }
