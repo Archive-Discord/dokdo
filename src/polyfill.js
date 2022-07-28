@@ -36,35 +36,35 @@ module.exports.splitMessage = (
   return messages.concat(msg).filter((m) => m)
 }
 
-module.exports = function pingStatus(ping) {
+module.exports.pingStatus = (ping) => {
   if (ping < 100) {
-    return `+ Websocket Latency: ${ping}ms`;
+    return `+ Websocket Latency: ${ping}ms`
   } else if (ping < 200) {
-    return `--- Websocket Latency: ${ping}ms`;
+    return `--- Websocket Latency: ${ping}ms`
   } else {
-    return `- Websocket Latency: ${ping}ms`;
+    return `- Websocket Latency: ${ping}ms`
   }
 }
 
-module.exports = function platfromReslove(platform) {
+module.exports.platfromReslove = (platform) => {
   switch (platform) {
     case 'win32':
-      return 'Windows';
+      return 'Windows'
     case 'linux':
-      return 'Linux';
+      return 'Linux'
     case 'darwin':
-      return 'MacOS';
+      return 'MacOS'
     case 'android':
-      return 'Android';
+      return 'Android'
     case 'freebsd':
-      return 'FreeBSD';
+      return 'FreeBSD'
     case 'openbsd':
-      return 'OpenBSD';
+      return 'OpenBSD'
     case 'netbsd':
-      return 'NetBSD';
+      return 'NetBSD'
     case 'sunos':
-      return 'SunOS';
+      return 'SunOS'
     default:
-      return 'Unknown';
+      return 'Unknown'
   }
 }
