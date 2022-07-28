@@ -17,7 +17,7 @@ module.exports = class System {
     return result
   }
 
-  static processReadyAt() {
+  static processStartTime() {
     return new Date(Date.now() - process.uptime() * 1000)
   }
 }
