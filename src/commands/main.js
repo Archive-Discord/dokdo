@@ -44,7 +44,7 @@ module.exports = async function (message, parent) {
   const embed = new EmbedBuilder()
     .setTitle('Dokdo')
     .setDescription(description.join('\n'))
-    .setColor('#5865F2')
+    .setColor('#2f3136')
     .setFields([
       {
         name: '> **Info**',
